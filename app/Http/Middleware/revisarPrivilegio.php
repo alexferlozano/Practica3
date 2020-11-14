@@ -15,6 +15,9 @@ class revisarPrivilegio
      */
     public function handle($request, Closure $next)
     {
+        if ($request->rol != null) {
+            return redirect('registro');
+        }
         return $next($request);
     }
 }

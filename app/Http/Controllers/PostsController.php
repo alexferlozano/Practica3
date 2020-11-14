@@ -49,8 +49,7 @@ class PostsController extends Controller
             $post = posts::create([
                 'titulo'=>$request->titulo,
                 'user_id'=>$request->user()->id,
-                'descripcion'=>$request->descripcion,
-                'autor'=>$request->user()->name,
+                'descripcion'=>$request->descripcion
             ]);
             return response()->json($post,200);
         }
@@ -114,10 +113,9 @@ class PostsController extends Controller
      */
     public function destroy(int $id,Request $request)
     {
-        if($request->user()->tokenCan('admi:delete'))
+        if($request->user()->tokenCan('user:post') && posts::findorFail($id)->user_id==$request->user()->id)
         {
             $post = posts::findorFail($id);
-            DB::table('comentarios')->where('post_id','=',$id)->delete();
             $post->delete();
             return response()->json("El post $post->titulo ha sido eliminado",200);
         }

@@ -15,6 +15,9 @@ class rol
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if ($request->rol == 'admin' || $request->rol == 'user') {
+            return $next($request);
+        }
+        return redirect('usuarios');
     }
 }

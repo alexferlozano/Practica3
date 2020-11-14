@@ -15,6 +15,9 @@ class revisarEdad
      */
     public function handle($request, Closure $next)
     {
+        if ($request->edad <18) {
+            return redirect('registro');
+        }
         return $next($request);
     }
 }
