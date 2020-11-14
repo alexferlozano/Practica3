@@ -9,6 +9,9 @@ use App\permisos;
 use Illuminate\Support\Facades\DB;
 use App\posts;
 use App\comentarios;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Mailable;
 
 class AuthController extends Controller
 {
@@ -27,9 +30,37 @@ class AuthController extends Controller
            $usuario->email=$request->email;
            $usuario->password=Hash::make($request->password);
            $usuario->edad=$request->edad;
+           $usuario->confirmation_code=Str::random(15);
            if($usuario->save())
+           {
+               
+           $data=array(
+            'email'=>$usuario->email,
+            'name'=>$usuario->name,
+            'confirmation_code'=>$usuario->confirmation_code
+
+           );
+            Mail::send('emails.correoconfirmacion', $data, function($message) use ($data){
+                $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
+                $message->to($data['email'], $data['name'])->subject('Por favor confirma tu correo');
+            });
                return response()->json($usuario,201);
+           }
             return abort(400,"Error al crear usuario");
+    }
+
+    public function verificar(string $code)
+    {
+        $user = User::where('confirmation_code', $code)->first();
+
+        if (! $user)
+            return redirect('/');
+
+        $user->confirmado = true;
+        $user->confirmation_code = null;
+        $user->save();
+
+        return abort("Tu correo se ha verificado correctamente",201);
     }
 
     public function login(Request $request)
@@ -45,6 +76,10 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => ['Las credenciales son incorrectas'],
             ]);
+        }
+        if($user->confirmado==false)
+        {
+            return response()->json("Necesitas verificar la cuenta primero crack");
         }
         if($user->rol=='admin')
         {
@@ -67,8 +102,13 @@ class AuthController extends Controller
     public function usuarios(Request $request)
     {
         if($request->user()->tokenCan('admi:list'))
+        {
             return response()->json(["Lista de usuarios"=>User::all()],200);
-        return abort(401,"Tienes 0 permiso de estar aqui"); 
+        }
+        else
+        {
+            return abort(401,"Tienes 0 permiso de estar aqui");
+        } 
     }
 
     public function eliminarUsuario(int $id,Request $request)

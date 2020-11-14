@@ -47,12 +47,12 @@ class ComentariosController extends Controller
         if($request->user()->tokenCan('user:coment'))
         {
             $post=posts::findorFail($id);
-            $comentario=$post->comments()->create(
-                [
-                    'user_id'=>$request->user()->id,
-                    'descripcion'=>$request->descripcion
-                ]
-            );
+            $comentario=comentarios::create([
+                'post_id'=>$post->id,
+                'user_id'=>$request->user()->id,
+                'descripcion'=>$request->descripcion
+            ]);
+            
             return response()->json($comentario,200);
         }
         else
@@ -72,7 +72,7 @@ class ComentariosController extends Controller
         if($request->user()->tokenCan('user:coment'))
         {
             $post=posts::findorFail($id);
-            $comentario=DB::table('comentarios')->select('id','post_id','descripcion','autor')->where('post_id','=',$post->id)->get();
+            $comentario=DB::table('comentarios')->select('id','post_id','descripcion')->where('post_id','=',$post->id)->get();
             return response()->json($comentario,200);
         }
         else
@@ -124,7 +124,7 @@ class ComentariosController extends Controller
      */
     public function destroy(int $id,int $id2,Request $request)
     {
-        if($request->user()->tokenCan('admi:delete'))
+        if($request->user()->tokenCan('user:coment') && comentarios::findorFail($id2)->user_id==$request->user()->id)
         {
             $post=posts::findorFail($id);
             $comentario=comentarios::findorFail($id2);

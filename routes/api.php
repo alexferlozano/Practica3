@@ -36,3 +36,4 @@ Route::middleware('auth:sanctum')->delete('/usuarios/eliminar/{id}','AuthControl
 
 Route::post("registro","AuthController@registro")->middleware('edad', 'privilegio');
 Route::post("login","AuthController@login");
+Route::get("/registro/verificar/{confirmation_code}","AuthController@verificar");
