@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\posts;
-use Illuminate\Http\Request;
 use App\comentario;
+use Illuminate\Http\Request;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
 {
@@ -46,11 +48,21 @@ class PostsController extends Controller
     {
         if($request->user()->tokenCan('user:post'))
         {
+            if($request->hasFile('foto'))
+            {
+                $path=Storage::disk('public')->putFile('posts/',$request->foto);
+            }
+            else
+            {
+                $path=null;
+            }
             $post = posts::create([
                 'titulo'=>$request->titulo,
                 'user_id'=>$request->user()->id,
-                'descripcion'=>$request->descripcion
+                'descripcion'=>$request->descripcion,
+                'foto'=>$path
             ]);
+            
             return response()->json($post,200);
         }
         else
@@ -95,7 +107,16 @@ class PostsController extends Controller
             $post=posts::findorFail($id);
             $post->titulo = $request->has('titulo') ? $request->get('titulo') : $post->titulo;
             $post->descripcion = $request->has('descripcion') ? $request->get('descripcion') : $post->descripcion;
-            $post->autor = $request->has('autor') ? $request->get('autor') : $post->autor;
+            if($request->hasFile('foto'))
+            {
+                Storage::disk('public')->delete($post->foto);
+                $path=Storage::disk('public')->putFile('posts/',$request->foto);
+                $post->foto=$path;
+            }
+            else
+            {
+                $post->foto;
+            }
             $post->save();
             return response()->json($post,200);
         }
@@ -116,6 +137,7 @@ class PostsController extends Controller
         if($request->user()->tokenCan('user:post') && posts::findorFail($id)->user_id==$request->user()->id)
         {
             $post = posts::findorFail($id);
+            Storage::disk('public')->delete($post->foto);
             $post->delete();
             return response()->json("El post $post->titulo ha sido eliminado",200);
         }
