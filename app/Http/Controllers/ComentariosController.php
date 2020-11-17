@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\comentarios;
+use App\User;
 use App\posts;
+use App\comentarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ComentariosController extends Controller
 {
@@ -52,7 +54,28 @@ class ComentariosController extends Controller
                 'user_id'=>$request->user()->id,
                 'descripcion'=>$request->descripcion
             ]);
-            
+            $u1=User::findorFail($post->user_id);
+            $u2=User::findorFail($comentario->user_id);
+            $data1=array(
+                'email'=>$u1->email,
+                'name'=>$u1->name,
+                'titulo'=>$post->titulo,
+                'descripcion'=>$comentario->descripcion,
+                'user'=>$u2->name
+               );
+            $data2=array(
+                'email'=>$u2->email,
+                'name'=>$u2->name,
+                'titulo'=>$post->titulo
+               );
+                Mail::send('emails.autorcomentario', $data2, function($message) use ($data2){
+                    $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
+                    $message->to($data2['email'], $data2['name'])->subject('Has comentado un post');
+                });
+                Mail::send('emails.autorpost', $data1, function($message) use ($data1){
+                    $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
+                    $message->to($data1['email'], $data1['name'])->subject('Han comentado en tu post');
+                });
             return response()->json($comentario,200);
         }
         else
@@ -60,7 +83,6 @@ class ComentariosController extends Controller
             return abort(401,"Tienes 0 permiso de estar aqui");
         }
     }
-
     /**
      * Display the specified resource.
      *

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\permisos;
-use Illuminate\Support\Facades\DB;
 use App\posts;
+use App\permisos;
 use App\comentarios;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -107,6 +107,20 @@ class AuthController extends Controller
         }
         else
         {
+            $user2=User::findorFail($request->user()->id);
+            $user=User::findorFail(1);
+            $mensaje="ver usuarios";
+            $intruso=$user2->name;
+            $data=array(
+                'name'=>$user->name,
+                'email'=>$user->email,
+                'intruso'=>$intruso,
+                'mensaje'=>$mensaje
+            );
+            Mail::send('emails.aviso', $data, function($message) use ($data){
+                $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
+                $message->to($data['email'], $data['name'])->subject('Han querido acceder a algo sin permiso');
+            });
             return abort(401,"Tienes 0 permiso de estar aqui");
         } 
     }
@@ -132,7 +146,20 @@ class AuthController extends Controller
         }
         else
         {
-            return abort(401,"Tienes 0 permiso de estar aqui");
+            $user2=User::findorFail($request->user()->id);
+            $user=User::findorFail(1);
+            $mensaje="Eliminar usuarios";
+            $intruso=$user2->name;
+            $data=array(
+                'name'=>$user->name,
+                'email'=>$user->email,
+                'intruso'=>$intruso,
+                'mensaje'=>$mensaje
+            );
+            Mail::send('emails.aviso', $data, function($message) use ($data){
+                $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
+                $message->to($data['email'], $data['name'])->subject('Han querido acceder a algo sin permiso');
+            });
         }
     }
 
@@ -150,7 +177,22 @@ class AuthController extends Controller
         }
         else
         {
+            $user2=User::findorFail($request->user()->id);
+            $user=User::findorFail(1);
+            $mensaje="Editar usuarios";
+            $intruso=$user2->name;
+            $data=array(
+                'name'=>$user->name,
+                'email'=>$user->email,
+                'intruso'=>$intruso,
+                'mensaje'=>$mensaje
+            );
+            Mail::send('emails.aviso', $data, function($message) use ($data){
+                $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
+                $message->to($data['email'], $data['name'])->subject('Han querido acceder a algo sin permiso');
+            });
             return abort(401,"Tienes 0 permiso de estar aqui");
         }
     }
+
 }
