@@ -6,13 +6,13 @@ use App\User;
 use App\posts;
 use App\permisos;
 use App\comentarios;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
@@ -26,13 +26,21 @@ class AuthController extends Controller
                'password'=>'required',
                'edad'=>'required'
            ]);
-
+           if($request->hasFile('foto'))
+           {
+               $path=Storage::disk('public')->putFile('usuarios/',$request->foto);
+           }
+           else
+           {
+               $path=null;
+           }
            $usuario= new User();
            $usuario->name=$request->name;
            $usuario->email=$request->email;
            $usuario->password=Hash::make($request->password);
            $usuario->edad=$request->edad;
            $usuario->confirmation_code=Str::random(15);
+           $usuario->foto=$path;
            if($usuario->save())
            {
                

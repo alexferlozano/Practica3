@@ -110,8 +110,8 @@ class PostsController extends Controller
             if($request->hasFile('foto'))
             {
                 Storage::disk('public')->delete($post->foto);
-                $path=Storage::disk('public')->putFile('posts/',$request->foto);
-                $post->foto=$path;
+                //$path=Storage::disk('public')->putFile('posts/',$request->foto);
+                //$post->foto=$path;
             }
             else
             {
