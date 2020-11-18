@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get("post","PostsController@index");
 Route::middleware('auth:sanctum')->get("post/{id}","PostsController@buscar")->where("id","[0-9]+");
 Route::middleware('auth:sanctum')->post("post","PostsController@store");
+Route::middleware('auth:sanctum')->put("post/{id}/editar/foto","PostsController@editarFoto")->where("id","[0-9]+");
 Route::middleware('auth:sanctum')->delete("post/{id}","PostsController@destroy")->where("id","[0-9]+");
 Route::middleware('auth:sanctum')->put("post/{id}","PostsController@update")->where("id","[0-9]+");
 
@@ -30,6 +31,7 @@ Route::middleware('auth:sanctum')->put("post/{id}/comentarios/{id2}","Comentario
 Route::middleware('auth:sanctum')->delete('/logout','AuthController@logout');
 Route::middleware('auth:sanctum')->get('/usuarios','AuthController@usuarios');
 Route::middleware('auth:sanctum')->get('/usuarios/perfil','UserController@verPerfil');
+Route::middleware('auth:sanctum')->delete('/usuarios/eliminar/foto','UserController@eliminarFoto');
 Route::middleware('auth:sanctum')->put('/usuarios/perfil/editar','UserController@editarDatos')->middleware('edad', 'privilegio');
 Route::middleware('auth:sanctum')->put('/usuarios/editar/{id}','AuthController@editarDatos')->where("id","[0-9]+")->middleware('edad', 'rol');
 Route::middleware('auth:sanctum')->delete('/usuarios/eliminar/{id}','AuthController@eliminarUsuario')->where("id","[0-9]+");
@@ -37,3 +39,8 @@ Route::middleware('auth:sanctum')->delete('/usuarios/eliminar/{id}','AuthControl
 Route::post("registro","AuthController@registro")->middleware('edad', 'privilegio');
 Route::post("login","AuthController@login");
 Route::get("/registro/verificar/{confirmation_code}","AuthController@verificar");
+
+Route::get("/verEvolucion/{id}","ApiController@verEvolucionPokemon")->where("id","[0-9]+");
+Route::get("/verHabilidad/{id}","ApiController@verHabilidad")->where("id","[0-9]+");
+Route::get("/verPokemonID/{id}","ApiController@verPokemonID")->where("id","[0-9]+");
+Route::get("/verPokemonNombre/{nombre}","ApiController@verPokemonNOMBRE");

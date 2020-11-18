@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -33,6 +34,22 @@ class UserController extends Controller
         {
             $id=$request->user()->id;
             $user=User::findorFail($id);
+            return response()->json($user,200);
+        }
+        else
+        {
+            return abort(401,"Tienes 0 permiso de estar aqui");
+        }
+    }//4|lxSGPbkKwvyfuMb5K504JXVuaaoKEJOPZEhFD5mK
+    public function eliminarFoto(Request $request)
+    {
+        if($request->user()->tokenCan('user:edit'))
+        {
+            $id=$request->user()->id;
+            $user=User::findorFail($id);
+            Storage::disk('public')->delete($user->foto);
+            $user->foto=null;
+            $user->save();
             return response()->json($user,200);
         }
         else

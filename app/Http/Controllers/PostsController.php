@@ -88,9 +88,27 @@ class PostsController extends Controller
      * @param  \App\posts  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(post $post)
+    public function editarFoto(Request $request, int $id)
     {
-        //
+        if($request->user()->tokenCan('user:post') && posts::findorFail($id)->user_id==$request->user()->id)
+        {
+            $post = posts::findorFail($id);
+            if($request->hasFile('foto'))
+            {
+                Storage::disk('public')->delete($post->foto);
+                $path=Storage::disk('public')->putFile('posts/',$request->foto);
+            }
+            else
+            {
+                $path=$post->foto;
+            }
+            $post->save();
+            return response()->json($post,200);
+        }
+        else
+        {
+            return abort(401,"Tienes 0 permiso de estar aqui");
+        }
     }
 
     /**
@@ -107,16 +125,6 @@ class PostsController extends Controller
             $post=posts::findorFail($id);
             $post->titulo = $request->has('titulo') ? $request->get('titulo') : $post->titulo;
             $post->descripcion = $request->has('descripcion') ? $request->get('descripcion') : $post->descripcion;
-            if($request->hasFile('foto'))
-            {
-                Storage::disk('public')->delete($post->foto);
-                //$path=Storage::disk('public')->putFile('posts/',$request->foto);
-                //$post->foto=$path;
-            }
-            else
-            {
-                $post->foto;
-            }
             $post->save();
             return response()->json($post,200);
         }
