@@ -40,7 +40,10 @@ class UserController extends Controller
         {
             return abort(401,"Tienes 0 permiso de estar aqui");
         }
-    }//4|lxSGPbkKwvyfuMb5K504JXVuaaoKEJOPZEhFD5mK
+    }
+
+    //1|jLnmjrn6NwYft7H3O55nRhaTUIy2xmzLvaDjZted
+    //2|DpnQinITKe45aYM0d8Ylj9GgOpagJ2lA7CFNmCJj
     public function eliminarFoto(Request $request)
     {
         if($request->user()->tokenCan('user:edit'))
@@ -49,6 +52,31 @@ class UserController extends Controller
             $user=User::findorFail($id);
             Storage::disk('public')->delete($user->foto);
             $user->foto=null;
+            $user->save();
+            return response()->json($user,200);
+        }
+        else
+        {
+            return abort(401,"Tienes 0 permiso de estar aqui");
+        }
+    }
+
+    public function editarFoto(Request $request)
+    {
+        if($request->user()->tokenCan('user:edit'))
+        {
+            $id=$request->user()->id;
+            $user=User::findorFail($id);
+            if($request->hasFile('foto'))
+            {
+                Storage::disk('public')->delete($user->foto);
+                $path=Storage::disk('public')->putFile('usuarios/',$request->foto);
+            }
+            else
+            {
+                $path=$user->foto;
+            }
+            $user->foto=$path;
             $user->save();
             return response()->json($user,200);
         }

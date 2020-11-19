@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get("post","PostsController@index");
 Route::middleware('auth:sanctum')->get("post/{id}","PostsController@buscar")->where("id","[0-9]+");
 Route::middleware('auth:sanctum')->post("post","PostsController@store");
-Route::middleware('auth:sanctum')->put("post/{id}/editar/foto","PostsController@editarFoto")->where("id","[0-9]+");
+Route::middleware('auth:sanctum')->post("post/{id}/editar/foto","PostsController@editarFoto")->where("id","[0-9]+");
 Route::middleware('auth:sanctum')->delete("post/{id}","PostsController@destroy")->where("id","[0-9]+");
 Route::middleware('auth:sanctum')->put("post/{id}","PostsController@update")->where("id","[0-9]+");
 
@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->delete('/logout','AuthController@logout');
 Route::middleware('auth:sanctum')->get('/usuarios','AuthController@usuarios');
 Route::middleware('auth:sanctum')->get('/usuarios/perfil','UserController@verPerfil');
 Route::middleware('auth:sanctum')->delete('/usuarios/eliminar/foto','UserController@eliminarFoto');
+Route::middleware('auth:sanctum')->post('/usuarios/editar/foto','UserController@editarFoto');
 Route::middleware('auth:sanctum')->put('/usuarios/perfil/editar','UserController@editarDatos')->middleware('edad', 'privilegio');
 Route::middleware('auth:sanctum')->put('/usuarios/editar/{id}','AuthController@editarDatos')->where("id","[0-9]+")->middleware('edad', 'rol');
 Route::middleware('auth:sanctum')->delete('/usuarios/eliminar/{id}','AuthController@eliminarUsuario')->where("id","[0-9]+");

@@ -59,7 +59,7 @@ class AuthController extends Controller
             return abort(400,"Error al crear usuario");
     }
 
-    public function verificar(string $code)
+    public function verificar($code)
     {
         $user = User::where('confirmation_code', $code)->first();
 
@@ -70,7 +70,7 @@ class AuthController extends Controller
         $user->confirmation_code = null;
         $user->save();
 
-        return abort("Tu correo se ha verificado correctamente",201);
+        return abort(201,"Tu correo se ha verificado correctamente");
     }
 
     public function login(Request $request)
@@ -140,10 +140,12 @@ class AuthController extends Controller
         if($request->user()->tokenCan('admi:delete'))
         {
             $user=User::findorFail($id);
+            Storage::disk('public')->delete($user->foto);
             $user->tokens()->delete();
             $post=posts::where('user_id','=',$user->id);
             if($post!=null)
             {
+                //Storage::disk('public')->delete($post->foto);
                 $post->delete();
             }
             $comentario=comentarios::where('user_id','=',$user->id);

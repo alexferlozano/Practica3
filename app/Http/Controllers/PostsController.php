@@ -102,6 +102,7 @@ class PostsController extends Controller
             {
                 $path=$post->foto;
             }
+            $post->foto=$path;
             $post->save();
             return response()->json($post,200);
         }
