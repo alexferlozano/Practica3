@@ -7,27 +7,21 @@ use Illuminate\Support\Facades\Http;
 
 class ApiController extends Controller
 {
-    public function verEvolucionPokemon(int $id)
+    public function verUltimosJuegos()
     {
-        $url='https://pokeapi.co/api/v2/evolution-chain/'.$id.'/';
+        $url='http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=960BB5B9C58DD7518FC7A0161C5ADD02&steamid=76561198396037238&format=json';
         $response=Http::timeout(10)->get($url)->json();
         return $response;
     }
-    public function verHabilidad(int $id)
+    public function verPerfil()
     {
-        $url='https://pokeapi.co/api/v2/ability/'.$id.'/';
+        $url='http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=960BB5B9C58DD7518FC7A0161C5ADD02&steamids=76561198396037238';
         $response=Http::timeout(10)->get($url)->json();
         return $response;
     }
-    public function verPokemonID(int $id)
+    public function verListaAmigos()
     {
-        $url='https://pokeapi.co/api/v2/pokemon/'.$id.'/';
-        $response=Http::timeout(10)->get($url)->json();
-        return $response;
-    }
-    public function verPokemonNOMBRE(string $nombre)
-    {
-        $url='https://pokeapi.co/api/v2/pokemon/'.$nombre.'/';
+        $url='http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=960BB5B9C58DD7518FC7A0161C5ADD02&steamid=76561198396037238&relationship=friend';
         $response=Http::timeout(10)->get($url)->json();
         return $response;
     }

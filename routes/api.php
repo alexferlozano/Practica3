@@ -41,7 +41,6 @@ Route::post("registro","AuthController@registro")->middleware('edad', 'privilegi
 Route::post("login","AuthController@login");
 Route::get("/registro/verificar/{confirmation_code}","AuthController@verificar");
 
-Route::get("/verEvolucion/{id}","ApiController@verEvolucionPokemon")->where("id","[0-9]+");
-Route::get("/verHabilidad/{id}","ApiController@verHabilidad")->where("id","[0-9]+");
-Route::get("/verPokemonID/{id}","ApiController@verPokemonID")->where("id","[0-9]+");
-Route::get("/verPokemonNombre/{nombre}","ApiController@verPokemonNOMBRE");
+Route::get("/ver/steam/juegos","ApiController@verUltimosJuegos");
+Route::get("/ver/steam/perfil","ApiController@verPerfil");
+Route::get("/ver/steam/amigos","ApiController@verListaAmigos");

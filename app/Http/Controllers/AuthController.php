@@ -48,7 +48,6 @@ class AuthController extends Controller
             'email'=>$usuario->email,
             'name'=>$usuario->name,
             'confirmation_code'=>$usuario->confirmation_code
-
            );
             Mail::send('emails.correoconfirmacion', $data, function($message) use ($data){
                 $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
