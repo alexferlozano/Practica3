@@ -148,8 +148,6 @@ class AuthController extends Controller
             $postas=posts::where('user_id','=',$user->id);
             if($posts!=null)
             {
-                //dd($post);1|WitgeZBjGzh5FobU8YpomQVZHcjkjMA2Im3fEl5B
-                //2|7e1Hnn5qEXkT2cFUSHuGv1Sp7hx6N49QPQjIaVuE
                 foreach($posts as $post=>$foto)
                 {
                     Storage::disk('public')->delete($foto->foto);
