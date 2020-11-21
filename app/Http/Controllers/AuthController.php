@@ -8,7 +8,7 @@ use App\permisos;
 use App\comentarios;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
-    use Illuminate\Support\Str;
+use Illuminate\Support\Str;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -214,7 +214,7 @@ class AuthController extends Controller
                 $message->to($data['email'], $data['name'])->subject('Han querido acceder a algo sin permiso');
             });
             return abort(401,"Tienes 0 permiso de estar aqui");
-        }
+        } //4|8z7rTG9deFqQKeguJxhtgiLeKhM9xm9ZgB0kiFUm, 5|8MysJROTvf8vL0KsKjGAaHxsq27TkUacnT4UTnjK
     }
 
 }

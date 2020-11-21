@@ -10,6 +10,7 @@ class ApiController extends Controller
     public function verUltimosJuegos(Request $request)
     {
         //id ejemplo 76561198402886692, 76561198396037238
+        
         $id=$request->id;
         $url='http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=960BB5B9C58DD7518FC7A0161C5ADD02&steamid='.$id.'&format=json';
         $response=Http::timeout(10)->get($url)->json();
