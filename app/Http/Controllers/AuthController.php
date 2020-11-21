@@ -8,7 +8,7 @@ use App\permisos;
 use App\comentarios;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+    use Illuminate\Support\Str;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -139,13 +139,25 @@ class AuthController extends Controller
         if($request->user()->tokenCan('admi:delete'))
         {
             $user=User::findorFail($id);
-            Storage::disk('public')->delete($user->foto);
-            $user->tokens()->delete();
-            $post=posts::where('user_id','=',$user->id);
-            if($post!=null)
+            if($user!=null)
             {
-                //Storage::disk('public')->delete($post->foto);
-                $post->delete();
+                Storage::disk('public')->delete($user->foto);
+            }
+            $user->tokens()->delete();
+            $posts=posts::where('user_id','=',$user->id)->get();
+            $postas=posts::where('user_id','=',$user->id);
+            if($posts!=null)
+            {
+                //dd($post);1|WitgeZBjGzh5FobU8YpomQVZHcjkjMA2Im3fEl5B
+                //2|7e1Hnn5qEXkT2cFUSHuGv1Sp7hx6N49QPQjIaVuE
+                foreach($posts as $post=>$foto)
+                {
+                    Storage::disk('public')->delete($foto->foto);
+                }
+            }
+            if($postas!=null)
+            { 
+                $postas->delete();
             }
             $comentario=comentarios::where('user_id','=',$user->id);
             if($comentario!=null)
@@ -171,6 +183,7 @@ class AuthController extends Controller
                 $message->from('19170025@uttcampus.edu.mx','Alex Lozano');
                 $message->to($data['email'], $data['name'])->subject('Han querido acceder a algo sin permiso');
             });
+            return abort(401,"Tienes 0 permiso de estar aqui");
         }
     }
 
